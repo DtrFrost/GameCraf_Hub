@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Header from './src/components/Header/header'
-import './App.css'
+// import './App.css'
 
 function  App(){
 
