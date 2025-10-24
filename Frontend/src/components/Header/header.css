@@ -1,0 +1,61 @@
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #222222;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .logo {
+    color: white;
+    font-size: 24px;
+    margin-right: auto;
+    margin-left: 20px;
+  }
+  
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav li {
+    margin: 0 15px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .search-input {
+    border: 1px solid #05A5BE; 
+    padding: 5px;
+    border-radius: 10px;
+    background-color: transparent; /* Прозрачный фон */
+    color: white;  /* Цвет текста */
+    width: 200px;  /* Ширина поисковой строки */
+    margin-right: 15px; /* Отступ справа */
+  }
+  
+  .notification-icon {
+    margin: 0 15px; /* Отступ от кнопки поиска */
+    color: white;
+    font-size: 24px;
+  }
+  
+  .login-button {
+    color: white;
+    padding: 5px 10px;
+    margin-right: 20px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
