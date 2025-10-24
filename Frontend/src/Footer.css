@@ -1,0 +1,38 @@
+.footer {
+    background-color: #222222;
+    color: #585858;
+    text-align: center;
+    padding: 20px;
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;          /* Используем flex для колонки */
+    flex-direction: column; /* Расположение элементов в колонку */
+    align-items: center;    /* Выравнивание по центру */
+}
+
+.contact-info {
+    margin: 8px 0;
+}
+
+.icons {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.icon {
+    width: 30px;  /* Ширина иконок */
+    height: 30px; /* Высота иконок */
+    margin: 0 10px; /* Отступ между иконками */
+    background-color: transparent; /* Прозрачный фон для пустых иконок */
+    border: 1px solid #585858; /* Стили для пустых иконок */
+    border-radius: 50%; /* Круглая форма иконок */
+}
+
+.rights {
+    margin-top: 20px;
+    font-size: 14px; /* Размер шрифта для текста прав */
+}
