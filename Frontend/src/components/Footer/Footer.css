@@ -1,0 +1,67 @@
+html, body {
+    height: 100%; /* Убедитесь, что html и body занимают 100% высоты */
+    margin: 0; /* Убираем отступы */
+}
+.body {
+    display: flex;
+    flex-direction: column; /* Вертикальная ориентация */
+    min-height: 100vh; /* Минимальная высота на весь экран */
+}
+.footer {
+    background-color: #222222;
+    color: #ffffff; /* Сделаем текст более читабельным на темном фоне */
+    text-align: center;
+    padding: 20px 0;
+    position: relative;  /* Поддержка позиционирования, если нужно */
+    height: 120px;
+    width: 100%;         /* Растягиваем футер на всю ширину */
+    bottom: 0;
+}
+
+.footer-content {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.contact-info-container {
+    display: flex; /* Выравнивание элементов в одну строку */
+    justify-content: center; /* Центрируем содержимое контейнера */
+    margin: 5px 0; /* Отступы сверху и снизу */
+}
+.contact-info {
+    margin: 0 15px; /* Изменяем отступ, чтобы лучше помещались в одном ряду */
+    font-size: 16px;
+}
+.icons {
+    display: flex;
+    justify-content: center;
+    margin: 5px 0;
+}
+
+.icon {
+    width: 30px;  
+    height: 30px;
+    margin: 0 10px;
+}
+.icon img{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon:hover {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1); /* Эффект для наведения */
+}
+
+.rights {
+    margin-top: 10px;
+    font-size: 14px;
+}
+.main {
+    min-height: calc(100vh - 100px); /* Устанавливаем минимальную высоту для контента */
+    padding-bottom: 80px; /* Устанавливаем отступ снизу, чтобы содержимое не перекрывалось футером */
+}
