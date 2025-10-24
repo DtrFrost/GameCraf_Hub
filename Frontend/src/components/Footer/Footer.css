@@ -1,20 +1,20 @@
 html, body {
-    height: 100%; /* Убедитесь, что html и body занимают 100% высоты */
-    margin: 0; /* Убираем отступы */
+    height: 100%;
+    margin: 0; 
 }
 .body {
     display: flex;
-    flex-direction: column; /* Вертикальная ориентация */
-    min-height: 100vh; /* Минимальная высота на весь экран */
+    flex-direction: column; 
+    min-height: 100vh; 
 }
 .footer {
     background-color: #222222;
-    color: #ffffff; /* Сделаем текст более читабельным на темном фоне */
+    color: #ffffff; 
     text-align: center;
     padding: 20px 0;
-    position: relative;  /* Поддержка позиционирования, если нужно */
+    position: relative;
     height: 120px;
-    width: 100%;         /* Растягиваем футер на всю ширину */
+    width: 100%;
     bottom: 0;
 }
 
@@ -26,12 +26,12 @@ html, body {
     align-items: center;
 }
 .contact-info-container {
-    display: flex; /* Выравнивание элементов в одну строку */
-    justify-content: center; /* Центрируем содержимое контейнера */
-    margin: 5px 0; /* Отступы сверху и снизу */
+    display: flex; 
+    justify-content: center; 
+    margin: 5px 0;
 }
 .contact-info {
-    margin: 0 15px; /* Изменяем отступ, чтобы лучше помещались в одном ряду */
+    margin: 0 15px;
     font-size: 16px;
 }
 .icons {
@@ -54,7 +54,7 @@ html, body {
 
 .icon:hover {
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1); /* Эффект для наведения */
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .rights {
@@ -62,6 +62,6 @@ html, body {
     font-size: 14px;
 }
 .main {
-    min-height: calc(100vh - 100px); /* Устанавливаем минимальную высоту для контента */
-    padding-bottom: 80px; /* Устанавливаем отступ снизу, чтобы содержимое не перекрывалось футером */
+    min-height: calc(100vh - 100px);
+    padding-bottom: 80px;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import './Register.css'; // Подключаем стили
+import './Register.css';
 
 const Register = () => {
   return (

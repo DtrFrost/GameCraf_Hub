@@ -2,12 +2,12 @@
     display: flex;
     align-items: center;
     background-color: #222222;
-    padding: 10px 20px; /* Увеличиваем отступы слева и справа */
-    position: fixed; /* Зафиксируем хедер */
-    top: 0;         /* Прижмем к верхней части */
-    width: 100%;    /* Занимает всю ширину */
-    z-index: 1000;  /* Чтобы он был поверх содержимого */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Добавление тени */
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   }
   
   .logo {

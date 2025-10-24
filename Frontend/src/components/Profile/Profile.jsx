@@ -1,6 +1,7 @@
 import React from 'react';
 import './Profile.css';
 
+
 const Profile = ({ username, date, messages }) => {
   return (
     <div className="profile-container">
