@@ -1,3 +1,10 @@
 # GameCraf_Hub
-It's not work
-AAAAAAAA
+
+# Быстрый старт
+
+```bash
+git clone https://github.com/DtrFrost/GameCraf_Hub.git
+cd GameCraf_Hub
+npm install
+npm install react-router-dom
+npm run dev

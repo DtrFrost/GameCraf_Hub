@@ -2,7 +2,7 @@ import React from 'react';
 import './Header.css';
 
 
-const Header = () => {
+export default function Header(){
   return (
     <header className="header">
       <div className="logo"><a href='/'><img src="/cashe/logo.png" alt="sss" /></a></div>
@@ -21,5 +21,3 @@ const Header = () => {
     </header>
   );
 };
-
-export default Header;
