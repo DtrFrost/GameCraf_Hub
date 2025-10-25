@@ -1,8 +1,7 @@
 import React from 'react';
 import './Footer.css';
 
-
-const Footer = () => {
+export default function Footer(){
     return (
         <footer className="footer">
             <div className="footer-content">
@@ -11,14 +10,12 @@ const Footer = () => {
                     <p className="contact-info">8-800-555-35-35</p>
                 </div>
                 <div className="icons">
-                    <span className="icon empty-icon"><img src="/cashe/VK.png" alt="vk" /></span>
-                    <span className="icon empty-icon"><img src="/cashe/logo-tg.png" alt="tg" /></span>
-                    <span className="icon empty-icon"><img src="/cashe/github-mark 2.png" alt="github" /></span>
+                    <span className="icon empty-icon"><img src="./Frontend/public/cashe/VK.svg" alt="vk-logo" /></span>
+                    <span className="icon empty-icon"><img src="./Frontend/public/cashe/logo-tg.svg" alt="tg-logo" /></span>
+                    <span className="icon empty-icon"><img src="./Frontend/public/cashe/github-mark 2.svg" alt="github-logo" /></span>
                 </div>
                 <p className="rights">ГеймКрафт Хаб © Все права защищены 2025</p>
             </div>
         </footer>
     );
 };
-
-export default Footer;
