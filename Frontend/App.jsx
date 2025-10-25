@@ -7,6 +7,7 @@ import Login from "./src/components/Login/Login";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import './App.css';
 import NotFound from "./src/components/NotFound/NotFound";
+import Guide from './src/components/cons_guide/guide'
 
 const App = () => {
   const username = "docmoc4";
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/" element={<Profile username={username} date={date} messages={messages} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/guide" element={<Guide />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       <Footer />

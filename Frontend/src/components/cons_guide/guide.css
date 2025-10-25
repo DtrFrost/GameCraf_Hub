@@ -1,0 +1,113 @@
+body {
+    background-color: #2B2B2B;
+    color: white;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .guide-container {
+    display: flex;
+    height: 100%;  /* Заполняет всю высоту экрана */
+    width: 95%;
+    padding: 20px 0;
+  }
+  
+
+  .filter-panel {
+    width: 20%;  /* Задает ширину панели фильтров */
+    background-color: #424242;
+    padding: 10px;
+    border-radius: 10px;
+    position: sticky; /* Закрепить панель фильтров */
+    top: 0; /* Позиция по верхнему краю экрана */
+    height: 100%; /* Чтобы занимала всю высоту */
+    overflow-y: auto; /* Прокрутка, если блоков много */
+  }
+  
+  .workspace {
+    flex-grow: 1;  /* Работа с оставшимся пространством */
+    background-color: #424242;
+    padding: 20px;
+    border-radius: 10px;
+    margin-left: 20px; /* Отступ слева от панели фильтров */
+    width: 80%; /* Задает ширину рабочей области */
+    min-height: 60vh;
+  }
+  
+  .workspace-area {
+    flex-grow: 1; /* Занимает оставшееся пространство для блока */
+    border: 2px solid #2B2B2B; /* Окружение для рабочей области */
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px; /* Отступ снизу для кнопки */
+  }
+  
+/* Добавьте эти стили в ваш Guide.css */
+.workspace-item {
+    position: relative; /* Для позиционирования кнопки удаления */
+    background-color: #2B2B2B;
+    margin: 10px 0;
+    padding: 5px;
+    border: 1px solid white;
+    border-radius: 10px;
+  }
+  
+  .delete-button {
+    position: absolute; /* Позволяет расположить кнопку в правом верхнем углу */
+    top: 5px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    color: darkred; /* Изменение цвета при наведении */
+  }
+  
+  .text-image-container,
+  .image-text-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 95%;
+  }
+  
+  textarea {
+    width: 95%;
+    height: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  input {
+    background-color: #D9D9D9;
+    color: #000000;
+    width: 95%;
+    border: none;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+  }
+  .image-preview {
+    margin-top: 10px;
+    max-width: 30%;
+    height: auto;
+  }
+  
+  .save-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center; /* Выровнять кнопку по центру */
+  }
+  
+  .save-button:hover {
+    background-color: #45a049;
+  }
+  

@@ -11,7 +11,7 @@ export default function Header(){
           <ul>
             <a href="/"><li>Главная</li></a>
             <a href="#"><li>Топ Гайды</li></a>
-            <a href="#"><li>Конструктор</li></a>
+            <a href="/guide"><li>Конструктор</li></a>
           </ul>
         </nav>
         <input type="text" placeholder="Поиск..." className="search-input" />
