@@ -5,7 +5,7 @@ import './Header.css';
 export default function Header(){
   return (
     <header className="header">
-      <div className="logo"><a href='/'><img src="/cashe/logo.png" alt="sss" /></a></div>
+      <div className="logo"><a href='/'><img src="./Frontend/public/cashe/logo.svg" alt="Logo" /></a></div>
       <div className="nav">
         <nav>
           <ul>
