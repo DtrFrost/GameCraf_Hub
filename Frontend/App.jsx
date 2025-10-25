@@ -1,11 +1,11 @@
 import React from "react";
-import Header from "./components/Header/header";
-import Profile from "./components/Profile/Profile";
-import Footer from "./components/Footer/footer";
+import Header from "./src/components/Header/header";
+import Profile from "./src/components/Profile/Profile"
+import Footer from "./src/components/Footer/footer"
+import Register from "./src/components/Register/Register"
+import Login from "./src/components/Login/Login";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import './App.css';
-import Register from "./components/Register/Register";
-import Login from "./components/Login/Login";
 
 const App = () => {
   const username = "docmoc4";
