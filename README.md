@@ -10,6 +10,7 @@ npm install react-router-dom
 npm run dev
 # Запуск сервера (Backend)
 
+в бэке: npm install dotenv express cors mysql2 bcryptjs jsonwebtoken
 node server.js
 
 
