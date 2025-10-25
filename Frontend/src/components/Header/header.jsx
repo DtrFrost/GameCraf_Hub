@@ -15,7 +15,7 @@ export default function Header(){
           </ul>
         </nav>
         <input type="text" placeholder="Поиск..." className="search-input" />
-      <div className="notification-icon"><img src="/cashe/bell.png" alt="" /></div>
+      <div className="notification-icon"><img src="./Frontend/public/cashe/bell.svg" alt="" /></div>
       <a href='Register'className="login-button">Вход</a>
       </div>
     </header>
