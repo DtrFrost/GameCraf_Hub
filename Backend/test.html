@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест API</title>
+</head>
+<body>
+    <h2>Прямой тест API (без React)</h2>
+    
+    <button onclick="testGet()">Тест GET /api/test</button>
+    <button onclick="testPost()">Тест POST /api/auth/register</button>
+    
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
+
+    <script>
+        const API_URL = 'http://localhost:3005';
+        
+        async function testGet() {
+            try {
+                console.log('🔄 Тестирую GET...');
+                const response = await fetch(API_URL + '/api/test');
+                const data = await response.json();
+                
+                document.getElementById('result').innerHTML = 
+                    `<div style="color: green;">
+                     ✅ GET работает!<br>
+                     Ответ: ${JSON.stringify(data)}
+                     </div>`;
+                console.log('✅ GET результат:', data);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div style="color: red;">
+                     ❌ GET ошибка: ${error.message}
+                     </div>`;
+                console.error('❌ GET ошибка:', error);
+            }
+        }
+        
+        async function testPost() {
+            try {
+                console.log('🔄 Тестирую POST...');
+                const response = await fetch(API_URL + '/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: "Test User",
+                        email: "test@test.com",
+                        password: "123456"
+                    }),
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('result').innerHTML = 
+                    `<div style="color: green;">
+                     ✅ POST работает!<br>
+                     Ответ: ${JSON.stringify(data)}
+                     </div>`;
+                console.log('✅ POST результат:', data);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div style="color: red;">
+                     ❌ POST ошибка: ${error.message}
+                     </div>`;
+                console.error('❌ POST ошибка:', error);
+            }
+        }
+    </script>
+</body>
+</html>

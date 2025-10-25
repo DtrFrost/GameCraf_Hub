@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "composer": "^4.1.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "php": "^1.1.0",
     "react": "^19.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -27,5 +31,21 @@
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
     "vite": "^7.1.7"
-  }
+  },
+  "description": "```bash\r git clone https://github.com/DtrFrost/GameCraf_Hub.git\r cd GameCraf_Hub\r npm install\r npm install react-router-dom\r npm run dev",
+  "main": "eslint.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DtrFrost/GameCraf_Hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DtrFrost/GameCraf_Hub/issues"
+  },
+  "homepage": "https://github.com/DtrFrost/GameCraf_Hub#readme"
 }

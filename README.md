@@ -8,7 +8,20 @@ cd GameCraf_Hub
 npm install
 npm install react-router-dom
 npm run dev
+# Запуск сервера (Backend)
 
+в бэке: npm install dotenv express cors mysql2 bcryptjs jsonwebtoken
+node server.js
+
+
+JWT_SECRET=oAVglQFicf8ImJ3RhwvTJBLuGTy43eWraq7
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASSWORD=your_mysql_password_here
+DB_NAME=react_slim_project
+PORT=5000
+NODE_ENV=development
+=======
 #Комиты команды
 Все команды выполняются в Git Bash терминале в VSC.
 Если выводит какие-то ошибки о том, что нет такой команды, вбивайте полностью ошибку в гпт.
@@ -44,3 +57,7 @@ git push origin feature/название-фичи
 # 3. Влить через "Squash and Merge".
 # 4. Удалить ветку на GitHub.
 # 5. Вернуться к шагу "Начать новую задачу".
+
+#Запуск сервера (Backend)
+
+node server.js
