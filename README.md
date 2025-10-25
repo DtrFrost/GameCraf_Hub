@@ -44,3 +44,7 @@ git push origin feature/название-фичи
 # 3. Влить через "Squash and Merge".
 # 4. Удалить ветку на GitHub.
 # 5. Вернуться к шагу "Начать новую задачу".
+
+#Запуск сервера (Backend)
+
+node server.js
