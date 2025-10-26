@@ -1,113 +1,413 @@
 body {
-    background-color: #2B2B2B;
-    color: white;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  .guide-container {
-    display: flex;
-    height: 100%;  /* Заполняет всю высоту экрана */
-    width: 95%;
-    padding: 20px 0;
-  }
-  
+  background-color: #1E1E1E;
+  color: white;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-  .filter-panel {
-    width: 20%;  /* Задает ширину панели фильтров */
-    background-color: #424242;
-    padding: 10px;
-    border-radius: 10px;
-    position: sticky; /* Закрепить панель фильтров */
-    top: 0; /* Позиция по верхнему краю экрана */
-    height: 100%; /* Чтобы занимала всю высоту */
-    overflow-y: auto; /* Прокрутка, если блоков много */
-  }
-  
-  .workspace {
-    flex-grow: 1;  /* Работа с оставшимся пространством */
-    background-color: #424242;
-    padding: 20px;
-    border-radius: 10px;
-    margin-left: 20px; /* Отступ слева от панели фильтров */
-    width: 80%; /* Задает ширину рабочей области */
-    min-height: 60vh;
-  }
-  
-  .workspace-area {
-    flex-grow: 1; /* Занимает оставшееся пространство для блока */
-    border: 2px solid #2B2B2B; /* Окружение для рабочей области */
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px; /* Отступ снизу для кнопки */
-  }
-  
-/* Добавьте эти стили в ваш Guide.css */
+.guide-container {
+  min-height: 100vh;
+  padding: 100px 20px 20px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.guide-header {
+  text-align: center;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #05A5BE;
+}
+
+.guide-header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  background: linear-gradient(45deg, #05A5BE, #00FF88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.guide-header p {
+  margin: 10px 0 0 0;
+  color: #ccc;
+  font-size: 1.1em;
+}
+
+.guide-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 120px;
+}
+
+.blocks-panel {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid #05A5BE;
+}
+
+.blocks-panel h3 {
+  margin-top: 0;
+  color: #05A5BE;
+  border-bottom: 1px solid #05A5BE;
+  padding-bottom: 10px;
+}
+
+.blocks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.draggable-block {
+  transition: all 0.3s ease;
+  cursor: grab;
+}
+
+.draggable-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(5, 165, 190, 0.3);
+}
+
+.draggable-block:active {
+  cursor: grabbing;
+}
+
+.block-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.block-icon {
+  font-size: 1.2em;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Guide Info Section */
+.guide-info-section {
+  background: #2a2a2a;
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid #05A5BE;
+}
+
+.guide-info-section h3 {
+  margin-top: 0;
+  color: #05A5BE;
+  border-bottom: 1px solid #05A5BE;
+  padding-bottom: 10px;
+}
+
+.guide-info-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #05A5BE;
+}
+
+.title-input, .game-input {
+  background: #1a1a1a;
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.title-input:focus, .game-input:focus {
+  outline: none;
+  border-color: #05A5BE;
+}
+
+/* Cover Upload */
+.cover-upload-area {
+  border: 2px dashed #05A5BE;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(5, 165, 190, 0.05);
+}
+
+.cover-upload-area:hover {
+  background: rgba(5, 165, 190, 0.1);
+}
+
+.cover-upload-placeholder {
+  color: #888;
+}
+
+.cover-upload-placeholder .upload-icon {
+  font-size: 3em;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cover-preview-container {
+  position: relative;
+}
+
+.cover-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+}
+
+.change-cover-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Workspace */
+.workspace-section {
+  background: #2a2a2a;
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid #05A5BE;
+}
+
+.workspace-section h3 {
+  margin-top: 0;
+  color: #05A5BE;
+  border-bottom: 1px solid #05A5BE;
+  padding-bottom: 10px;
+}
+
+.workspace-area {
+  min-height: 200px;
+  border: 2px dashed #444;
+  border-radius: 10px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.empty-workspace {
+  text-align: center;
+  color: #666;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 3em;
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* Workspace Items */
 .workspace-item {
-    position: relative; /* Для позиционирования кнопки удаления */
-    background-color: #2B2B2B;
-    margin: 10px 0;
-    padding: 5px;
-    border: 1px solid white;
-    border-radius: 10px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.block-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.block-controls button {
+  background: #05A5BE;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.block-controls button:hover {
+  background: #048ba1;
+}
+
+.delete-button {
+  background: #dc3545 !important;
+}
+
+.delete-button:hover {
+  background: #c82333 !important;
+}
+
+/* Content Areas */
+.content-textarea, .combined-textarea {
+  width: 100%;
+  min-height: 120px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.content-textarea:focus, .combined-textarea:focus {
+  outline: none;
+  border-color: #05A5BE;
+}
+
+.image-upload-area {
+  border: 2px dashed #05A5BE;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(5, 165, 190, 0.05);
+}
+
+.image-upload-area:hover {
+  background: rgba(5, 165, 190, 0.1);
+}
+
+.upload-placeholder {
+  color: #888;
+}
+
+.upload-placeholder .upload-icon {
+  font-size: 2em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.image-preview-container {
+  position: relative;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+}
+
+.change-image-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+/* Combined Blocks */
+.combined-block {
+  display: grid;
+  gap: 15px;
+}
+
+.text-image-layout {
+  grid-template-columns: 2fr 1fr;
+}
+
+.image-text-layout {
+  grid-template-columns: 1fr 2fr;
+}
+
+.combined-image {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Save Section */
+.save-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid #05A5BE;
+}
+
+.save-button {
+  background: linear-gradient(45deg, #05A5BE, #00FF88);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.save-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(5, 165, 190, 0.4);
+}
+
+.save-button:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.guide-stats {
+  display: flex;
+  gap: 20px;
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .guide-layout {
+    grid-template-columns: 1fr;
   }
   
-  .delete-button {
-    position: absolute; /* Позволяет расположить кнопку в правом верхнем углу */
-    top: 5px;
-    right: 5px;
-    background: transparent;
-    border: none;
-    color: red;
-    font-size: 16px;
-    cursor: pointer;
+  .sidebar {
+    position: static;
   }
   
-  .delete-button:hover {
-    color: darkred; /* Изменение цвета при наведении */
+  .combined-block {
+    grid-template-columns: 1fr;
   }
-  
-  .text-image-container,
-  .image-text-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 95%;
-  }
-  
-  textarea {
-    width: 95%;
-    height: 100%;
-    border-radius: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-  }
-  input {
-    background-color: #D9D9D9;
-    color: #000000;
-    width: 95%;
-    border: none;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
-  }
-  .image-preview {
-    margin-top: 10px;
-    max-width: 30%;
-    height: auto;
-  }
-  
-  .save-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    align-self: center; /* Выровнять кнопку по центру */
-  }
-  
-  .save-button:hover {
-    background-color: #45a049;
-  }
-  
+}
