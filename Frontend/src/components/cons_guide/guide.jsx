@@ -127,7 +127,38 @@ const DraggableItem = ({ block, index, moveBlock, onDelete }) => {
     );
   };
   
-  
+  // Компонент для обязательного блока "Отображение в поиске"
+const MandatoryBlock = () => {
+  const [imageSrc, setImageSrc] = useState("");
+  const [guideTitle, setGuideTitle] = useState("");
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="mandatory-block">
+      <div className="mandatory-block-content">
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+        <textarea
+          placeholder="Введите название гайда (макс. 50 символов)"
+          maxLength={50}
+          value={guideTitle}
+          onChange={(e) => setGuideTitle(e.target.value)}
+        />
+        <div className='maxsimv'>Максимум 50 символов</div>
+      </div>
+      {imageSrc && <img src={imageSrc} alt="Загруженное изображение" className="image-preview" />}
+    </div>
+  );
+};
 
 // Компонент для рабочей области
 const DroppableArea = ({ blocks, setBlocks }) => {
@@ -153,15 +184,15 @@ const DroppableArea = ({ blocks, setBlocks }) => {
   
     return (
       <div ref={ref} className="workspace-area">
+        {/* Добавляем обязательный блок перед другими блоками */}
+        <MandatoryBlock />
         {blocks.map((block, index) => (
           <DraggableItem 
             key={block.id} 
             index={index} 
             block={block} 
             moveBlock={moveBlock} 
-            onDelete={() => {
-              setBlocks(prev => prev.filter((_, i) => i !== index));
-            }}
+            onDelete={() => setBlocks(prev => prev.filter((_, i) => i !== index))}
           />
         ))}
       </div>
