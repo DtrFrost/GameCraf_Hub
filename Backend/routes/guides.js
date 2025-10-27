@@ -14,6 +14,40 @@ router.use((req, res, next) => {
 
 // 📍 ВАЖНО: Специфические маршруты ДО динамических!
 
+// GET /api/guides/user/:userId - получить гайды пользователя со статистикой
+router.get('/user/:userId', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const [guides] = await pool.execute(`
+      SELECT 
+        g.*,
+        u.name as author_name,
+        (SELECT COUNT(*) FROM guide_likes gl WHERE gl.guide_id = g.id) as likes_count,
+        (SELECT COUNT(*) FROM comments c WHERE c.guide_id = g.id AND c.is_deleted = FALSE) as comments_count,
+        (SELECT bc.content_value 
+         FROM guide_blocks gb 
+         JOIN block_content bc ON gb.id = bc.block_id 
+         WHERE gb.guide_id = g.id AND gb.block_type = 'cover' 
+         LIMIT 1) as cover_image
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      WHERE g.user_id = ?
+      ORDER BY g.created_at DESC
+    `, [userId]);
+
+    const guidesWithStats = guides.map(guide => ({
+      ...guide,
+      coverImage: guide.cover_image ? `/uploads/${guide.cover_image}` : null
+    }));
+
+    res.json(guidesWithStats);
+  } catch (error) {
+    console.error('Ошибка получения гайдов пользователя:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // GET /api/guides/recent - получить последние гайды
 router.get('/recent', async (req, res) => {
   try {

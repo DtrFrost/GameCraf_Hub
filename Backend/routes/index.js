@@ -2,6 +2,10 @@ import express from 'express';
 import requestLogger from '../middleware/logging.js';
 import authRouter from './auth.js';
 import guideRouter from './guides.js';
+import commentRouter from './comments.js';
+import likeRouter from './likes.js';
+import favoriteRouter from './favorites.js';
+import notificationRouter from './notifications.js';
 
 const router = express.Router();
 
@@ -9,8 +13,12 @@ const router = express.Router();
 router.use(requestLogger);
 
 // Подключаем роуты С ПРЕФИКСАМИ
-router.use('/auth', authRouter);      // 👈 Добавьте префикс
-router.use('/guides', guideRouter);   // 👈 Добавьте префикс
+router.use('/auth', authRouter);
+router.use('/guides', guideRouter);
+router.use('/comments', commentRouter);
+router.use('/likes', likeRouter);
+router.use('/favorites', favoriteRouter);
+router.use('/notifications', notificationRouter);
 
 // Тестовые эндпоинты
 router.get('/test', (req, res) => {
@@ -26,6 +34,10 @@ router.get('/test-data', (req, res) => {
     endpoints: {
       auth: 'GET /api/auth/*',
       guides: 'GET /api/guides/*',
+      comments: 'GET /api/comments/*',
+      likes: 'GET /api/likes/*',
+      favorites: 'GET /api/favorites/*',
+      notifications: 'GET /api/notifications/*',
       test: 'GET /api/test'
     }
   });

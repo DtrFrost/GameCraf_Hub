@@ -122,6 +122,40 @@
   border-radius: 8px;
 }
 
+.guide-actions {
+  display: flex;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.like-btn, .favorite-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.like-btn:hover, .favorite-btn:hover {
+  background: #f8f9fa;
+}
+
+.like-btn.liked {
+  background: #fff5f5;
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.favorite-btn.favorited {
+  background: #fff9db;
+  border-color: #ffd43b;
+  color: #f08c00;
+}
+
 @media (max-width: 768px) {
   .guide-page {
     padding: 15px;
