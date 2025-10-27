@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
+import './AssemblyConstructor.css';
 
 const ItemSlot = ({ onDrop, item, onRemove }) => {
     const [{ isOver }, drop] = useDrop({
@@ -23,44 +24,22 @@ const ItemSlot = ({ onDrop, item, onRemove }) => {
     };
 
     return (
-        <div ref={drop} style={{
-            display:'flex',
-            justifyContent:'center',
-            alignItems:'center',
-            flexDirection:'column',
-            height: '100%',
-            width: '100%',
-            borderRadius:'10px',
-            border: '1px dashed black',
-            backgroundColor: '424242',
-            marginBottom: '10px',
-            position: 'relative',
-        }}>
+        <div 
+            ref={drop} 
+            className={`item-slot ${isOver ? 'item-slot-over' : ''}`}
+        >
             {item ? (
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                    <img src={item.image} alt={item.name} style={{
-                        width: '100%', height: '100%', objectFit: 'contain' 
-                    }} />
+                <div className="slot-content">
+                    <img src={item.image} alt={item.name} className="slot-item-image" />
                     <button 
                         onClick={handleRemove}
-                        style={{
-                            width:'20px',
-                            height:'20px',
-                            position: 'absolute',
-                            top: '5px',
-                            right: '5px',
-                            backgroundColor: 'red',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '50%',
-                            cursor: 'pointer',
-                        }}
+                        className="remove-button"
                     >
                         ×
                     </button>
                 </div>
             ) : (
-                <span>Слот</span>
+                <span className="slot-empty-text">Слот</span>
             )}
         </div>
     );

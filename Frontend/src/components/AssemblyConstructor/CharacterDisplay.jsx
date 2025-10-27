@@ -1,4 +1,5 @@
 import React from 'react';
+import './AssemblyConstructor.css';
 
 const CharacterDisplay = ({ selectedCharacter }) => {
     return (

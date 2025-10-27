@@ -3,6 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Item from './Item';
 import ItemSlot from './ItemSlot';
+import './AssemblyConstructor.css';
 
 const characters = {
     'Team Fortress 2': [
@@ -97,57 +98,76 @@ const AssemblyConstructor = () => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div style={{ display: 'flex', padding: '20px' }}>
-                <div style={{ marginRight: '20px' }}>
-                    <h2>Фильтр</h2>
-                    <select onChange={handleGameChange} value={selectedGame}>
-                        <option value="">Выберите игру</option>
-                        {Object.keys(characters).map((game) => (
-                            <option key={game} value={game}>{game}</option>
-                        ))}
-                    </select>
+            <div className="assembly-constructor">
+                <div className="constructor-container">
+                    <div className="constructor-filters">
+                        <h2>Фильтр</h2>
+                        <select className="constructor-select" onChange={handleGameChange} value={selectedGame}>
+                            <option value="">Выберите игру</option>
+                            {Object.keys(characters).map((game) => (
+                                <option key={game} value={game}>{game}</option>
+                            ))}
+                        </select>
 
-                    <select onChange={handleCharacterChange} disabled={!selectedGame}>
-                        <option value="">Выберите персонажа</option>
-                        {selectedGame && characters[selectedGame].map((char) => (
-                            <option key={char.name} value={char.name}>{char.name}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div style={{ marginRight: '20px', flexGrow: 1 , width:'100%',minWidth:'300px'}}>
-                    <h2>Персонаж</h2>
-                    {selectedCharacter ? (
-                        <div>
-                            <h3>{selectedCharacter.name}</h3>
-                            <img src={selectedCharacter.image} alt={selectedCharacter.name} style={{ width: '100%', height: '100%' }} />
-                            <p>Урон: {characterStats.damage}</p>
-                            <p>Защита: {characterStats.defense}</p>
-                            <p>Здоровье: {characterStats.health}</p>
-                        </div>
-                    ) : (
-                        <p>Выберите персонажа</p>
-                    )}
-                </div>
-
-                <div>
-                    <h2>Фильтр предметов</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 2fr)', gap: '10px', width:'100%', height:'35%',marginBottom:'135px' }}>
-                        {items.map((item) => (
-                            <Item key={item.name} item={item} />
-                        ))}
+                        <select className="constructor-select" onChange={handleCharacterChange} disabled={!selectedGame}>
+                            <option value="">Выберите персонажа</option>
+                            {selectedGame && characters[selectedGame].map((char) => (
+                                <option key={char.name} value={char.name}>{char.name}</option>
+                            ))}
+                        </select>
                     </div>
 
-                    <h2>Слоты для предметов</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', width:'60%', height:'25%',marginBottom:'50px'}}>
-                    {itemSlots.map((item, index) => (
-                        <ItemSlot
-                            key={index}
-                            item={item} // передаем текущий предмет в слот
-                            onDrop={(droppedItem) => handleDrop(droppedItem, index)}
-                            onRemove={() => handleRemove(index)}
-                        />
-                    ))}
+                    <div className="constructor-character">
+                        <h2>Персонаж</h2>
+                        {selectedCharacter ? (
+                            <div className="character-card">
+                                <h3 className="character-name">{selectedCharacter.name}</h3>
+                                <img 
+                                    src={selectedCharacter.image} 
+                                    alt={selectedCharacter.name} 
+                                    className="character-image" 
+                                />
+                                <div className="character-stats">
+                                    <div className="stat-item">
+                                        <span className="stat-label">Урон:</span>
+                                        <span className="stat-value">{characterStats.damage}</span>
+                                    </div>
+                                    <div className="stat-item">
+                                        <span className="stat-label">Защита:</span>
+                                        <span className="stat-value">{characterStats.defense}</span>
+                                    </div>
+                                    <div className="stat-item">
+                                        <span className="stat-label">Здоровье:</span>
+                                        <span className="stat-value">{characterStats.health}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="no-character">
+                                <p>Выберите персонажа</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="constructor-items">
+                        <h2>Фильтр предметов</h2>
+                        <div className="items-grid">
+                            {items.map((item) => (
+                                <Item key={item.name} item={item} />
+                            ))}
+                        </div>
+
+                        <h2>Слоты для предметов</h2>
+                        <div className="item-slot-container">
+                        {itemSlots.map((item, index) => (
+                            <ItemSlot
+                                key={index}
+                                item={item} // передаем текущий предмет в слот
+                                onDrop={(droppedItem) => handleDrop(droppedItem, index)}
+                                onRemove={() => handleRemove(index)}
+                            />
+                        ))}
+                        </div>
                     </div>
                 </div>
             </div>
