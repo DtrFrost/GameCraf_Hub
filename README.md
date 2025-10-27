@@ -11,6 +11,8 @@ npm run dev
 # Запуск сервера (Backend)
 
 в бэке:
+cd GameCraf_hub
+cd Backend
 npm install dotenv express cors mysql2 bcryptjs jsonwebtoken multer
 node server.js
 
