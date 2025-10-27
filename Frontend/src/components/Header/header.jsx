@@ -23,6 +23,10 @@ export default function Header(){
             <Link to="/"><li>Главная</li></Link>
             <a href="/AssemblyConstructor"><li>Сборка</li></a>
             <Link to="/guide"><li>Конструктор</li></Link>
+            {/* Добавьте ссылку на профиль если пользователь авторизован */}
+            {isAuthenticated && (
+              <Link to="/profile"><li>Мой Профиль</li></Link>
+            )}
           </ul>
         </nav>
         <input type="text" placeholder="Поиск..." className="search-input" />

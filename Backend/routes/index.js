@@ -1,27 +1,34 @@
 import express from 'express';
 import requestLogger from '../middleware/logging.js';
-import authRoutes from './auth.js';
-import guideRoutes from './guides.js';
+import authRouter from './auth.js';
+import guideRouter from './guides.js';
 
 const router = express.Router();
 
 // Глобальное логирование
 router.use(requestLogger);
 
-// Подключаем роуты
-router.use(authRoutes);    // ← Должно быть authRoutes (с 's' на конце)
-router.use(guideRoutes);   // ← Должно быть guideRoutes (с 's' на конце)
+// Подключаем роуты С ПРЕФИКСАМИ
+router.use('/auth', authRouter);      // 👈 Добавьте префикс
+router.use('/guides', guideRouter);   // 👈 Добавьте префикс
 
 // Тестовые эндпоинты
 router.get('/test', (req, res) => {
-  res.json({ 
-    message: '✅ Сервер работает!', 
+  res.json({
+    message: '✅ Сервер работает!',
     timestamp: new Date()
   });
 });
 
-router.get('/guides-test', (req, res) => {
-  res.json({ message: 'Guides endpoint is working!' });
+router.get('/test-data', (req, res) => {
+  res.json({
+    message: 'Тестовый эндпоинт для данных',
+    endpoints: {
+      auth: 'GET /api/auth/*',
+      guides: 'GET /api/guides/*',
+      test: 'GET /api/test'
+    }
+  });
 });
 
 export default router;

@@ -5,7 +5,7 @@ import { hashPassword, comparePassword, generateToken, authenticateToken } from 
 const router = express.Router();
 
 // POST /api/auth/login - вход пользователя
-router.post('/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {  // 👈 Убрал /auth
   try {
     console.log('🔐 Запрос на вход:', req.body);
     
@@ -65,7 +65,7 @@ router.post('/auth/login', async (req, res) => {
 });
 
 // POST /api/auth/register - регистрация пользователя
-router.post('/auth/register', async (req, res) => {
+router.post('/register', async (req, res) => {  // 👈 Убрал /auth
   try {
     console.log('🔍 Начало регистрации...');
     const { name, email, password } = req.body;
@@ -116,7 +116,7 @@ router.post('/auth/register', async (req, res) => {
 });
 
 // GET /api/auth/me - получение данных текущего пользователя
-router.get('/auth/me', authenticateToken, async (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {  // 👈 Убрал /auth
   try {
     const [users] = await pool.execute(
       'SELECT id, name, email, role, created_at FROM users WHERE id = ?',

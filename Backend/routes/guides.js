@@ -5,8 +5,135 @@ import upload from '../config/multer.js';
 
 const router = express.Router();
 
+// Отладка всех запросов к guides
+router.use((req, res, next) => {
+  console.log(`🎯 Guides Router: ${req.method} ${req.originalUrl}`);
+  console.log(`📝 Path: ${req.path}, Params:`, req.params);
+  next();
+});
+
+// 📍 ВАЖНО: Специфические маршруты ДО динамических!
+
+// GET /api/guides/recent - получить последние гайды
+router.get('/recent', async (req, res) => {
+  try {
+    console.log('📥 Запрос последних гайдов...');
+    
+    const [guides] = await pool.execute(`
+      SELECT 
+        g.id,
+        g.title,
+        g.game,
+        g.created_at,
+        u.name as author_name,
+        bc.content_value as cover_image
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      LEFT JOIN guide_blocks gb ON gb.guide_id = g.id AND gb.block_type = 'cover'
+      LEFT JOIN block_content bc ON bc.block_id = gb.id AND bc.content_type = 'image'
+      ORDER BY g.created_at DESC 
+      LIMIT 5
+    `);
+
+    console.log(`📊 Найдено гайдов: ${guides.length}`);
+
+    // Преобразуем данные чтобы добавить coverImage
+    const guidesWithCover = guides.map(guide => ({
+      ...guide,
+      coverImage: guide.cover_image ? `/uploads/${guide.cover_image}` : null
+    }));
+
+    console.log('📸 Гайды с обложками:', guidesWithCover.map(g => ({id: g.id, cover: g.coverImage})));
+
+    res.json(guidesWithCover);
+
+  } catch (error) {
+    console.error('❌ Ошибка получения последних гайдов:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// GET /api/guides/public - получить все гайды
+router.get('/public', async (req, res) => {
+  console.log('🎯 ПОПАЛИ В /public!');
+  try {
+    const [guides] = await pool.execute(`
+      SELECT 
+        g.*, 
+        u.name as author_name
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      ORDER BY g.created_at DESC
+    `);
+
+    console.log(`📊 Найдено гайдов: ${guides.length}`);
+    res.json(guides);
+
+  } catch (error) {
+    console.error('❌ Ошибка получения публичных гайдов:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// GET /api/guides/debug/info - отладочная информация
+router.get('/debug/info', async (req, res) => {
+  try {
+    console.log('🔍 Отладочная информация о гайдах...');
+    
+    // Проверим общее количество гайдов
+    const [guideCount] = await pool.execute('SELECT COUNT(*) as count FROM guides');
+    
+    // Проверим несколько гайдов
+    const [sampleGuides] = await pool.execute(`
+      SELECT g.id, g.title, g.game, u.name as author 
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      ORDER BY g.created_at DESC 
+      LIMIT 3
+    `);
+
+    res.json({
+      totalGuides: guideCount[0].count,
+      sampleGuides: sampleGuides,
+      message: '✅ API работает, проверьте данные'
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка отладки:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// GET /api/guides/game/:game - получить гайды по игре (доступно всем)
+router.get('/game/:game', async (req, res) => {
+  try {
+    const gameName = req.params.game;
+    console.log(`🎮 Запрос гайдов для игры: "${gameName}"`);
+    
+    const [guides] = await pool.execute(`
+      SELECT 
+        g.id,
+        g.title, 
+        g.game,
+        g.created_at,
+        u.name as author_name
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      WHERE g.game = ?
+      ORDER BY g.created_at DESC
+    `, [gameName]);
+
+    console.log(`📊 Найдено гайдов для "${gameName}": ${guides.length}`);
+    
+    res.json(guides);
+  } catch (error) {
+    console.error('❌ Ошибка получения гайдов по игре:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // POST /api/guides - создать гайд с загрузкой изображений
-router.post('/guides', authenticateToken, upload.fields([
+router.post('/', authenticateToken, upload.fields([
   { name: 'coverImage', maxCount: 1 },
   { name: 'blockImages', maxCount: 10 }
 ]), async (req, res) => {
@@ -139,8 +266,40 @@ router.post('/guides', authenticateToken, upload.fields([
   }
 });
 
+// GET /api/guides - получить все гайды пользователя (требует авторизации)
+router.get('/', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const [guides] = await pool.execute(`
+      SELECT g.*, u.name as author_name,
+             (SELECT bc.content_value 
+              FROM guide_blocks gb 
+              JOIN block_content bc ON gb.id = bc.block_id 
+              WHERE gb.guide_id = g.id AND gb.block_type = 'cover' 
+              LIMIT 1) as cover_image
+      FROM guides g 
+      LEFT JOIN users u ON g.user_id = u.id 
+      WHERE g.user_id = ?
+      ORDER BY g.created_at DESC
+    `, [userId]);
+
+    const guidesWithCover = guides.map(guide => ({
+      ...guide,
+      coverImage: guide.cover_image ? `/uploads/${guide.cover_image}` : null
+    }));
+
+    res.json(guidesWithCover);
+  } catch (error) {
+    console.error('Ошибка получения гайдов:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// ❗️САМЫЙ ПОСЛЕДНИЙ МАРШРУТ - динамический
 // GET /api/guides/:id - получить гайд по ID
-router.get('/guides/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
+  console.log(`🎯 ПОПАЛИ В /:id! ID: ${req.params.id}`);
   try {
     const guideId = req.params.id;
 
@@ -213,36 +372,6 @@ router.get('/guides/:id', async (req, res) => {
   } catch (error) {
     console.error('❌ Ошибка получения гайда:', error);
     res.status(500).json({ error: 'Ошибка при получении гайда' });
-  }
-});
-
-// GET /api/guides - получить все гайды пользователя
-router.get('/guides', authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.userId;
-
-    const [guides] = await pool.execute(`
-      SELECT g.*, u.name as author_name,
-             (SELECT bc.content_value 
-              FROM guide_blocks gb 
-              JOIN block_content bc ON gb.id = bc.block_id 
-              WHERE gb.guide_id = g.id AND gb.block_type = 'cover' 
-              LIMIT 1) as cover_image
-      FROM guides g 
-      LEFT JOIN users u ON g.user_id = u.id 
-      WHERE g.user_id = ?
-      ORDER BY g.created_at DESC
-    `, [userId]);
-
-    const guidesWithCover = guides.map(guide => ({
-      ...guide,
-      coverImage: guide.cover_image ? `/uploads/${guide.cover_image}` : null
-    }));
-
-    res.json(guidesWithCover);
-  } catch (error) {
-    console.error('Ошибка получения гайдов:', error);
-    res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
 
