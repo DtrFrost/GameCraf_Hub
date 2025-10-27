@@ -5,7 +5,8 @@
 ```bash
 git clone https://github.com/DtrFrost/GameCraf_Hub.git
 cd GameCraf_Hub
-npm install react-router-dom
+npm install
+npm install react-router-dom axios
 npm run dev
 # Запуск сервера (Backend)
 
