@@ -21,7 +21,7 @@ export default function Header(){
         <nav>
           <ul>
             <Link to="/"><li>Главная</li></Link>
-            <a href="#"><li>Топ Гайды</li></a>
+            <a href="/AssemblyConstructor"><li>Сборка</li></a>
             <Link to="/guide"><li>Конструктор</li></Link>
             {/* Добавьте ссылку на профиль если пользователь авторизован */}
             {isAuthenticated && (

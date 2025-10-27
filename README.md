@@ -6,11 +6,12 @@
 git clone https://github.com/DtrFrost/GameCraf_Hub.git
 cd GameCraf_Hub
 npm install
-npm install react-router-dom
+npm install react-router-dom axios
 npm run dev
 # Запуск сервера (Backend)
 
-в бэке: npm install dotenv express cors mysql2 bcryptjs jsonwebtoken
+в бэке:
+npm install dotenv express cors mysql2 bcryptjs jsonwebtoken multer
 node server.js
 
 

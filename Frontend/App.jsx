@@ -10,7 +10,10 @@ import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
 import './App.css';
 import NotFound from "./src/components/NotFound/NotFound";
 import Guide from './src/components/cons_guide/guide'
+
 import HomePage from './src/pages/HomePage/HomePage'
+
+import AssemblyConstructor from './src/components/AssemblyConstructor/AssemblyConstructor'
 
 // Защищенный маршрут
 const ProtectedRoute = ({ children }) => {
@@ -64,7 +67,11 @@ const AppContent = () => {
             </ProtectedRoute>
           } 
         />
+
         
+
+        <Route path='/AssemblyConstructor' element={<AssemblyConstructor />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
