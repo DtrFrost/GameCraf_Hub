@@ -26,7 +26,7 @@ const Profile = () => {
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3005/api/notifications', {
+      const response = await fetch('http://localhost:5173/api/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -39,7 +39,7 @@ const Profile = () => {
   const fetchFavorites = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3005/api/favorites', {
+      const response = await fetch('http://localhost:5173/api/favorites', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -52,7 +52,7 @@ const Profile = () => {
   const fetchUserGuides = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3005/api/guides/user/${user.id}`, {
+      const response = await fetch(`http://localhost:5173/api/guides/user/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -103,7 +103,7 @@ const Profile = () => {
       {guide.coverImage && (
         <div className="card-cover">
           <img 
-            src={`http://localhost:3005${guide.coverImage}`} 
+            src={`http://localhost:5173${guide.coverImage}`} 
             alt={guide.title}
             className="cover-image"
           />
@@ -145,7 +145,6 @@ const Profile = () => {
   );
 
   return (
-    <div className="profile-page">
       <div className="profile-container">
         <div className="profile-main-block">
           <div className="profile-header">
@@ -213,7 +212,7 @@ const Profile = () => {
                         onClick={async () => {
                           try {
                             const token = localStorage.getItem('token');
-                            await fetch('http://localhost:3005/api/notifications/read-all', {
+                            await fetch('http://localhost:5173/api/notifications/read-all', {
                               method: 'PUT',
                               headers: { Authorization: `Bearer ${token}` }
                             });
@@ -237,7 +236,7 @@ const Profile = () => {
                           onClick={async () => {
                             try {
                               const token = localStorage.getItem('token');
-                              await fetch(`http://localhost:3005/api/notifications/${notification.id}/read`, {
+                              await fetch(`http://localhost:5173/api/notifications/${notification.id}/read`, {
                                 method: 'PUT',
                                 headers: { Authorization: `Bearer ${token}` }
                               });
@@ -316,7 +315,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
