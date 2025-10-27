@@ -14,20 +14,20 @@ export default function Header(){
     <header className="header">
       <div className="logo">
         <Link to='/'>
-          <img src="/logo.svg" alt="Logo" />
+          <img src="./Frontend/public/cashe/logo.svg" alt="Logo" />
         </Link>
       </div>
       <div className="nav">
         <nav>
           <ul>
             <Link to="/"><li>Главная</li></Link>
-            <a href="#"><li>Топ Гайды</li></a>
+            <a href="/AssemblyConstructor"><li>Сборка</li></a>
             <Link to="/guide"><li>Конструктор</li></Link>
           </ul>
         </nav>
         <input type="text" placeholder="Поиск..." className="search-input" />
         <div className="notification-icon">
-          <img src="./cashe/bell.svg" alt="Уведомления" />
+          <img src="./Frontend/public/cashe/bell.svg" alt="Уведомления" />
         </div>
         
         {isAuthenticated ? (
