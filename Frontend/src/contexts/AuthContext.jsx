@@ -13,6 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     // Проверяем, есть ли сохраненный пользователь
@@ -20,10 +21,28 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     
     if (savedUser && token) {
-      setUser(JSON.parse(savedUser));
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      fetchNotificationCount(token);
     }
     setLoading(false);
   }, []);
+
+  const fetchNotificationCount = async (token) => {
+    try {
+      const response = await fetch('http://localhost:3005/api/notifications/unread-count', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setNotificationCount(data.count);
+    } catch (error) {
+      console.error('Ошибка загрузки уведомлений:', error);
+    }
+  };
+
+  const updateNotificationCount = (count) => {
+    setNotificationCount(count);
+  };
 
   const login = async (email, password) => {
     try {
@@ -44,6 +63,9 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
+      
+      // Загружаем количество уведомлений после входа
+      fetchNotificationCount(data.token);
       
       return { success: true, user: data.user };
     } catch (error) {
@@ -71,6 +93,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
       
+      // Загружаем количество уведомлений после регистрации
+      fetchNotificationCount(data.token);
+      
       return { success: true, user: data.user };
     } catch (error) {
       return { success: false, error: error.message };
@@ -79,6 +104,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setNotificationCount(0);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
   };
@@ -89,7 +115,9 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     loading,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    notificationCount,
+    updateNotificationCount
   };
 
   return (
