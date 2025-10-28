@@ -1,42 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← ДОБАВЬ ЭТОТ ИМПОРТ
+import { useNavigate } from 'react-router-dom';
 import SidebarMenu from '../../components/SidebarMenu/SidebarMenu';
 import './HomePage.css';
 
 const HomePage = () => {
   const [recentGuides, setRecentGuides] = useState([]);
+  const [recentBuilds, setRecentBuilds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // ← ДОБАВЬ ЭТОТ ХУК
+  const navigate = useNavigate();
 
-  // Путь к картинке-заглушке
-  const PLACEHOLDER_IMAGE = './Frontend/public/placeholder-guide.svg';
+  const PLACEHOLDER_IMAGE = '/placeholder-guide.svg';
 
   useEffect(() => {
-    fetchRecentGuides();
+    fetchRecentContent();
   }, []);
 
-  const fetchRecentGuides = async () => {
+  const fetchRecentContent = async () => {
     try {
-      console.log('🔄 Загрузка последних гайдов...');
-      const response = await fetch('http://localhost:3005/api/guides/recent');
+      setLoading(true);
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const [guidesResponse, buildsResponse] = await Promise.all([
+        fetch('http://localhost:3005/api/guides/recent'),
+        fetch('http://localhost:3005/api/builds/public')
+      ]);
+
+      if (!guidesResponse.ok) {
+        throw new Error('Ошибка загрузки гайдов');
       }
       
-      const guides = await response.json();
-      console.log('✅ Получены гайды:', guides);
+      const guides = await guidesResponse.json();
+      let builds = [];
+      
+      if (buildsResponse.ok) {
+        builds = await buildsResponse.json();
+      }
+      
       setRecentGuides(guides);
+      setRecentBuilds(builds.slice(0, 5));
     } catch (error) {
-      console.error('❌ Ошибка загрузки последних гайдов:', error);
+      console.error('Ошибка загрузки данных:', error);
       setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Функция для получения картинки гайда (с заглушкой)
   const getGuideImage = (guide) => {
     if (guide.coverImage && guide.coverImage !== '/uploads/null') {
       return `http://localhost:3005${guide.coverImage}`;
@@ -44,9 +53,19 @@ const HomePage = () => {
     return PLACEHOLDER_IMAGE;
   };
 
-  // ⭐⭐⭐ ФУНКЦИЯ ДЛЯ КЛИКА ПО ГАЙДУ ⭐⭐⭐
+  const getBuildImage = (build) => {
+    if (build.character_image) {
+      return build.character_image;
+    }
+    return PLACEHOLDER_IMAGE;
+  };
+
   const handleGuideClick = (guideId) => {
     navigate(`/guide/${guideId}`);
+  };
+
+  const handleBuildClick = (buildId) => {
+    navigate(`/build/${buildId}`);
   };
 
   return (
@@ -62,52 +81,60 @@ const HomePage = () => {
             <p>Сообщество геймеров, создающих лучшие гайды и сборки</p>
           </div>
 
-          <section className="recent-guides-section">
-            <h2>🔥 Последние гайды</h2>
+          <section className="recent-section">
+            <h2>📚 Последние гайды</h2>
             
             {loading ? (
-              <div className="loading">Загрузка гайдов...</div>
+              <div className="loading">Загрузка...</div>
             ) : error ? (
               <div className="error">
                 <p>Ошибка: {error}</p>
-                <button onClick={fetchRecentGuides}>Попробовать снова</button>
+                <button onClick={fetchRecentContent}>Попробовать снова</button>
               </div>
             ) : recentGuides.length > 0 ? (
-              <div className="guides-grid">
+              <div className="content-grid">
                 {recentGuides.map(guide => (
-                  <div 
-                    key={guide.id} 
-                    className="guide-card"
-                    onClick={() => handleGuideClick(guide.id)} // ← ДОБАВЬ ОБРАБОТЧИК КЛИКА
-                  >
-                    <div className="guide-cover-container">
-                      <img 
-                        src={getGuideImage(guide)}
-                        alt={guide.title}
-                        className="guide-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                      <div className="guide-cover-fallback">
-                        🎮
-                      </div>
-                    </div>
-                    <div className="guide-info">
-                      <h3 className="guide-title">{guide.title}</h3>
-                      <p className="guide-game">🎯 {guide.game}</p>
-                      <p className="guide-author">Автор: {guide.author_name}</p>
-                      <p className="guide-date">
-                        Дата: {new Date(guide.created_at).toLocaleDateString('ru-RU')}
-                      </p>
-                    </div>
-                  </div>
+                  <ContentCard 
+                    key={`guide-${guide.id}`}
+                    item={guide}
+                    type="guide"
+                    getImage={getGuideImage}
+                    onClick={handleGuideClick}
+                  />
                 ))}
               </div>
             ) : (
-              <div className="no-guides">
+              <div className="no-content">
                 <p>Пока нет созданных гайдов. Будьте первым!</p>
+              </div>
+            )}
+          </section>
+
+          <section className="recent-section">
+            <h2>⚔️ Последние сборки</h2>
+            
+            {loading ? (
+              <div className="loading">Загрузка...</div>
+            ) : error ? (
+              <div className="error">
+                <p>Ошибка: {error}</p>
+                <button onClick={fetchRecentContent}>Попробовать снова</button>
+              </div>
+            ) : recentBuilds.length > 0 ? (
+              <div className="content-grid">
+                {recentBuilds.map(build => (
+                  <ContentCard 
+                    key={`build-${build.id}`}
+                    item={build}
+                    type="build"
+                    getImage={getBuildImage}
+                    onClick={handleBuildClick}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="no-content">
+                <p>Пока нет созданных сборок. Создайте первую!</p>
               </div>
             )}
           </section>
@@ -119,16 +146,67 @@ const HomePage = () => {
                 <div className="stat-label">Гайдов</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">3</div>
-                <div className="stat-label">Игр в каталоге</div>
+                <div className="stat-number">{recentBuilds.length}</div>
+                <div className="stat-label">Сборок</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">5+</div>
-                <div className="stat-label">Авторов</div>
+                <div className="stat-number">3</div>
+                <div className="stat-label">Игр в каталоге</div>
               </div>
             </div>
           </section>
         </main>
+      </div>
+    </div>
+  );
+};
+
+const ContentCard = ({ item, type, getImage, onClick }) => {
+  const isGuide = type === 'guide';
+  
+  return (
+    <div 
+      className="content-card"
+      onClick={() => onClick(item.id)}
+    >
+      <div className="content-cover-container">
+        <img 
+          src={getImage(item)}
+          alt={item.title}
+          className="content-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="content-cover-fallback">
+          {isGuide ? '📚' : '⚔️'}
+        </div>
+        <div className="content-type-badge">
+          {isGuide ? 'Гайд' : 'Сборка'}
+        </div>
+      </div>
+      
+      <div className="content-info">
+        <h3 className="content-title">{item.title}</h3>
+        <p className="content-game">🎯 {item.game_name || item.game}</p>
+        <p className="content-author">Автор: {item.author_name}</p>
+        
+        <div className="content-stats">
+          <span className="stat">
+            ❤️ {item.likes_count || 0}
+          </span>
+          <span className="stat">
+            💬 {item.comments_count || 0}
+          </span>
+          <span className="stat">
+            📅 {new Date(item.created_at).toLocaleDateString('ru-RU')}
+          </span>
+        </div>
+
+        {!isGuide && item.character_name && (
+          <p className="content-character">Персонаж: {item.character_name}</p>
+        )}
       </div>
     </div>
   );

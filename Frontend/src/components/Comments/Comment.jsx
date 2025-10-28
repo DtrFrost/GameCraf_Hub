@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './Comment.css';
 
-const Comment = ({ comment, onReply, onDelete, guideAuthorId }) => {
+const Comment = ({ comment, onReply, onDelete, contentAuthorId, contentType }) => {
   const { user } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isAuthor = comment.author_id === guideAuthorId;
+  const isAuthor = comment.author_id === contentAuthorId;
   const canDelete = user && user.id === comment.author_id;
 
   const handleReplySubmit = async (e) => {
@@ -42,7 +42,7 @@ const Comment = ({ comment, onReply, onDelete, guideAuthorId }) => {
       <div className="comment-header">
         <div className="comment-author">
           <span className="author-name">{comment.author_name}</span>
-          {isAuthor && <span className="author-badge">Автор</span>}
+          {isAuthor && <span className="author-badge">Автор {contentType === 'build' ? 'сборки' : 'гайда'}</span>}
         </div>
         <div className="comment-actions">
           {user && !comment.parent_id && (
@@ -77,7 +77,6 @@ const Comment = ({ comment, onReply, onDelete, guideAuthorId }) => {
         )}
       </div>
 
-      {/* Форма ответа */}
       {showReplyForm && (
         <form className="reply-form" onSubmit={handleReplySubmit}>
           <textarea
@@ -104,7 +103,6 @@ const Comment = ({ comment, onReply, onDelete, guideAuthorId }) => {
         </form>
       )}
 
-      {/* Ответы на комментарий */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="replies">
           {comment.replies.map(reply => (
@@ -113,7 +111,8 @@ const Comment = ({ comment, onReply, onDelete, guideAuthorId }) => {
               comment={reply}
               onReply={onReply}
               onDelete={onDelete}
-              guideAuthorId={guideAuthorId}
+              contentAuthorId={contentAuthorId}
+              contentType={contentType}
             />
           ))}
         </div>

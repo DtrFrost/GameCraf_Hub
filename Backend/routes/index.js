@@ -6,6 +6,10 @@ import commentRouter from './comments.js';
 import likeRouter from './likes.js';
 import favoriteRouter from './favorites.js';
 import notificationRouter from './notifications.js';
+import buildRouter from './builds.js';
+import buildLikeRouter from './buildLikes.js';
+import buildFavoriteRouter from './buildFavorites.js';
+
 
 const router = express.Router();
 
@@ -19,6 +23,9 @@ router.use('/comments', commentRouter);
 router.use('/likes', likeRouter);
 router.use('/favorites', favoriteRouter);
 router.use('/notifications', notificationRouter);
+router.use('/builds', buildRouter);
+router.use('/build-likes', buildLikeRouter);
+router.use('/build-favorites', buildFavoriteRouter);
 
 // Тестовые эндпоинты
 router.get('/test', (req, res) => {
@@ -38,6 +45,9 @@ router.get('/test-data', (req, res) => {
       likes: 'GET /api/likes/*',
       favorites: 'GET /api/favorites/*',
       notifications: 'GET /api/notifications/*',
+      builds: 'GET /api/builds/*',
+      'build-likes': 'GET /api/build-likes/*',
+      'build-favorites': 'GET /api/build-favorites/*',
       test: 'GET /api/test'
     }
   });
