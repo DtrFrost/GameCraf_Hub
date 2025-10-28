@@ -7,31 +7,30 @@ const SidebarMenu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [guides, setGuides] = useState([]);
   const [builds, setBuilds] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   const games = [
     { 
       name: 'Team Fortress 2', 
-      icon: './Frontend/public/gameIcons/tf2-icon.svg' 
+      icon: '/gameIcons/tf2-icon.svg' 
     },
     { 
       name: 'The binding of Isaac', 
-      icon: './Frontend/public/gameIcons/tboi-icon.webp' 
+      icon: '/gameIcons/tboi-icon.webp' 
     },
     { 
       name: 'Minecraft', 
-      icon: './Frontend/public/gameIcons/minecraft-icon.png' 
+      icon: '/gameIcons/minecraft-icon.png' 
     }
   ];
 
-  // Функция для получения пути к иконке игры
   const getGameIcon = (gameName) => {
     const game = games.find(g => g.name === gameName);
     return game ? game.icon : '/gameIcons/default-icon.png';
   };
 
-  // Загрузка данных при выборе игры
   useEffect(() => {
     if (selectedGame) {
       fetchGameData(selectedGame);
@@ -40,21 +39,40 @@ const SidebarMenu = () => {
 
   const fetchGameData = async (gameName) => {
     try {
-      // Загружаем гайды для выбранной игры
-      const guidesResponse = await fetch(`http://localhost:3005/api/guides/game/${encodeURIComponent(gameName)}`);
-      const guidesData = await guidesResponse.json();
-      setGuides(guidesData);
+      setLoading(true);
 
-      // Здесь позже добавим загрузку сборок
-      setBuilds([]); // временно пустой массив
+      const [guidesResponse, buildsResponse] = await Promise.all([
+        fetch(`http://localhost:3005/api/guides/game/${encodeURIComponent(gameName)}`),
+        fetch(`http://localhost:3005/api/builds/game/${encodeURIComponent(gameName)}`)
+      ]);
+
+      let guidesData = [];
+      let buildsData = [];
+
+      if (guidesResponse.ok) {
+        guidesData = await guidesResponse.json();
+      }
+
+      if (buildsResponse.ok) {
+        buildsData = await buildsResponse.json();
+      }
+
+      setGuides(guidesData);
+      setBuilds(buildsData);
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
+      setGuides([]);
+      setBuilds([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGameSelect = (game) => {
     setSelectedGame(game);
     setSelectedCategory(null);
+    setGuides([]);
+    setBuilds([]);
   };
 
   const handleCategorySelect = (category) => {
@@ -64,6 +82,8 @@ const SidebarMenu = () => {
   const handleBackToGames = () => {
     setSelectedGame(null);
     setSelectedCategory(null);
+    setGuides([]);
+    setBuilds([]);
   };
 
   const handleBackToCategories = () => {
@@ -85,7 +105,6 @@ const SidebarMenu = () => {
       </div>
 
       <div className="menu-content">
-        {/* Выбор игры */}
         {!selectedGame && (
           <div className="games-list">
             {games.map((game, index) => (
@@ -100,7 +119,6 @@ const SidebarMenu = () => {
                     alt={game.name}
                     className="game-icon-image"
                     onError={(e) => {
-                      // Если иконка не загрузилась, показываем эмодзи как запасной вариант
                       e.target.style.display = 'none';
                       const fallback = document.createElement('span');
                       fallback.className = 'game-icon-fallback';
@@ -115,7 +133,6 @@ const SidebarMenu = () => {
           </div>
         )}
 
-        {/* Выбор категории после выбора игры */}
         {selectedGame && !selectedCategory && (
           <div className="categories-section">
             <div className="menu-back" onClick={handleBackToGames}>
@@ -138,26 +155,30 @@ const SidebarMenu = () => {
                 <h4>{selectedGame}</h4>
               </div>
             </div>
-            <div className="categories-list">
-              <div
-                className="menu-item category-item"
-                onClick={() => handleCategorySelect('guides')}
-              >
-                <span className="category-icon">📚</span>
-                Гайды ({guides.length})
+            
+            {loading ? (
+              <div className="loading">Загрузка...</div>
+            ) : (
+              <div className="categories-list">
+                <div
+                  className="menu-item category-item"
+                  onClick={() => handleCategorySelect('guides')}
+                >
+                  <span className="category-icon">📚</span>
+                  Гайды ({guides.length})
+                </div>
+                <div
+                  className="menu-item category-item"
+                  onClick={() => handleCategorySelect('builds')}
+                >
+                  <span className="category-icon">⚔️</span>
+                  Сборки ({builds.length})
+                </div>
               </div>
-              <div
-                className="menu-item category-item"
-                onClick={() => handleCategorySelect('builds')}
-              >
-                <span className="category-icon">⚔️</span>
-                Сборки ({builds.length})
-              </div>
-            </div>
+            )}
           </div>
         )}
 
-        {/* Список гайдов */}
         {selectedGame && selectedCategory === 'guides' && (
           <div className="items-section">
             <div className="menu-back" onClick={handleBackToCategories}>
@@ -180,9 +201,12 @@ const SidebarMenu = () => {
                 <h4>Гайды по {selectedGame}</h4>
               </div>
             </div>
-            <div className="items-list">
-              {guides.length > 0 ? (
-                guides.map(guide => (
+            
+            {loading ? (
+              <div className="loading">Загрузка гайдов...</div>
+            ) : guides.length > 0 ? (
+              <div className="items-list">
+                {guides.map(guide => (
                   <div
                     key={guide.id}
                     className="menu-item guide-item"
@@ -193,16 +217,19 @@ const SidebarMenu = () => {
                       Автор: {guide.author_name} • 
                       {new Date(guide.created_at).toLocaleDateString()}
                     </div>
+                    <div className="item-stats">
+                      <span className="stat">❤️ {guide.likes_count || 0}</span>
+                      <span className="stat">💬 {guide.comments_count || 0}</span>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="no-items">Пока нет гайдов для этой игры</div>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-items">Пока нет гайдов для этой игры</div>
+            )}
           </div>
         )}
 
-        {/* Список сборок */}
         {selectedGame && selectedCategory === 'builds' && (
           <div className="items-section">
             <div className="menu-back" onClick={handleBackToCategories}>
@@ -225,9 +252,12 @@ const SidebarMenu = () => {
                 <h4>Сборки для {selectedGame}</h4>
               </div>
             </div>
-            <div className="items-list">
-              {builds.length > 0 ? (
-                builds.map(build => (
+            
+            {loading ? (
+              <div className="loading">Загрузка сборок...</div>
+            ) : builds.length > 0 ? (
+              <div className="items-list">
+                {builds.map(build => (
                   <div
                     key={build.id}
                     className="menu-item build-item"
@@ -235,15 +265,24 @@ const SidebarMenu = () => {
                   >
                     <div className="item-title">{build.title}</div>
                     <div className="item-meta">
-                      Автор: {build.author_name} • 
+                      Персонаж: {build.character_name} • 
+                      Автор: {build.author_name}
+                    </div>
+                    <div className="item-meta">
                       {new Date(build.created_at).toLocaleDateString()}
                     </div>
+                    <div className="item-stats">
+                      <span className="stat">❤️ {build.likes_count || 0}</span>
+                      <span className="stat">💬 {build.comments_count || 0}</span>
+                      <span className="stat">⚔️ {build.total_damage || 0}</span>
+                      <span className="stat">🛡️ {build.total_defense || 0}</span>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="no-items">Пока нет сборок для этой игры</div>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-items">Пока нет сборок для этой игры</div>
+            )}
           </div>
         )}
       </div>

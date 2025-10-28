@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Comment from './Comment';
 import './CommentsList.css';
 
-const CommentsList = ({ comments, onComment, onReply, onDelete, guideAuthorId }) => {
+const CommentsList = ({ comments, onComment, onReply, onDelete, contentAuthorId, contentType }) => {
   const { user } = useAuth();
   const [commentText, setCommentText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +29,6 @@ const CommentsList = ({ comments, onComment, onReply, onDelete, guideAuthorId })
         Комментарии ({comments.length})
       </h3>
 
-      {/* Форма добавления комментария */}
       {user ? (
         <form className="comment-form" onSubmit={handleSubmit}>
           <textarea
@@ -54,7 +53,6 @@ const CommentsList = ({ comments, onComment, onReply, onDelete, guideAuthorId })
         </div>
       )}
 
-      {/* Список комментариев */}
       <div className="comments-list">
         {comments.length > 0 ? (
           comments.map(comment => (
@@ -63,7 +61,8 @@ const CommentsList = ({ comments, onComment, onReply, onDelete, guideAuthorId })
               comment={comment}
               onReply={onReply}
               onDelete={onDelete}
-              guideAuthorId={guideAuthorId}
+              contentAuthorId={contentAuthorId}
+              contentType={contentType}
             />
           ))
         ) : (

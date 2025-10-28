@@ -1,66 +1,50 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
+import './ItemSlot.css';
 
-const ItemSlot = ({ onDrop, item, onRemove }) => {
+const ItemSlot = ({ onDrop, item, onRemove, slotNumber }) => {
     const [{ isOver }, drop] = useDrop({
         accept: 'ITEM',
         drop: (droppedItem) => {
-            // Игнорируем попытку добавления предмета, если слот занят
-            if (item) {
-                return; // Слот занят, ничего не делаем
-            }
-            onDrop(droppedItem); // Слот пустой, добавляем предмет
+            if (item) return;
+            onDrop(droppedItem);
         },
-        canDrop: () => !item, // Разрешаем дроп только если слот пуст
+        canDrop: () => !item,
         collect: (monitor) => ({
             isOver: monitor.isOver(),
         }),
     });
 
     const handleRemove = (e) => {
-        e.stopPropagation(); // Предотвращаем всплытие события клика
-        onRemove(); // Удаляем предмет из ячейки
+        e.stopPropagation();
+        onRemove();
     };
 
     return (
-        <div ref={drop} style={{
-            display:'flex',
-            justifyContent:'center',
-            alignItems:'center',
-            flexDirection:'column',
-            height: '100%',
-            width: '100%',
-            borderRadius:'10px',
-            border: '1px dashed black',
-            backgroundColor: '424242',
-            marginBottom: '10px',
-            position: 'relative',
-        }}>
+        <div 
+            ref={drop} 
+            className={`item-slot ${isOver ? 'slot-over' : ''} ${item ? 'slot-filled' : 'slot-empty'}`}
+        >
             {item ? (
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                    <img src={item.image} alt={item.name} style={{
-                        width: '100%', height: '100%', objectFit: 'contain' 
-                    }} />
+                <div className="slot-content">
+                    <img 
+                        src={item.item_image} // ← УБРАЛИ АБСОЛЮТНЫЙ ПУТЬ
+                        alt={item.item_name}
+                        onError={(e) => {
+                            e.target.src = '/placeholder-item.jpg';
+                        }}
+                    />
                     <button 
                         onClick={handleRemove}
-                        style={{
-                            width:'20px',
-                            height:'20px',
-                            position: 'absolute',
-                            top: '5px',
-                            right: '5px',
-                            backgroundColor: 'red',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '50%',
-                            cursor: 'pointer',
-                        }}
+                        className="remove-btn"
                     >
                         ×
                     </button>
                 </div>
             ) : (
-                <span>Слот</span>
+                <div className="slot-placeholder">
+                    <span>Слот {slotNumber}</span>
+                </div>
             )}
         </div>
     );

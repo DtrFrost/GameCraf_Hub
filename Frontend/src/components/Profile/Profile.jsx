@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 
 const Profile = () => {
@@ -9,7 +10,9 @@ const Profile = () => {
   const [favorites, setFavorites] = useState([]);
   const [userGuides, setUserGuides] = useState([]);
   const [userBuilds, setUserBuilds] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (activeTab === 'notifications') {
@@ -29,23 +32,46 @@ const Profile = () => {
       const response = await fetch('http://localhost:3005/api/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      if (!response.ok) throw new Error('Ошибка загрузки уведомлений');
       const data = await response.json();
-      setNotifications(data);
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Ошибка загрузки уведомлений:', error);
+      setNotifications([]);
     }
   };
 
   const fetchFavorites = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3005/api/favorites', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
-      setFavorites(data);
+      
+      const [guidesResponse, buildsResponse] = await Promise.all([
+        fetch('http://localhost:3005/api/favorites', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        fetch('http://localhost:3005/api/build-favorites', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+
+      let guidesData = [];
+      let buildsData = [];
+
+      if (guidesResponse.ok) {
+        guidesData = await guidesResponse.json();
+      }
+
+      if (buildsResponse.ok) {
+        buildsData = await buildsResponse.json();
+      }
+
+      const guidesWithType = Array.isArray(guidesData) ? guidesData.map(guide => ({ ...guide, type: 'guide' })) : [];
+      const buildsWithType = Array.isArray(buildsData) ? buildsData.map(build => ({ ...build, type: 'build' })) : [];
+
+      setFavorites([...guidesWithType, ...buildsWithType]);
     } catch (error) {
       console.error('Ошибка загрузки избранного:', error);
+      setFavorites([]);
     }
   };
 
@@ -55,27 +81,36 @@ const Profile = () => {
       const response = await fetch(`http://localhost:3005/api/guides/user/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      if (!response.ok) throw new Error('Ошибка загрузки гайдов');
       const data = await response.json();
-      setUserGuides(data);
+      setUserGuides(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Ошибка загрузки гайдов пользователя:', error);
+      setUserGuides([]);
     }
   };
 
   const fetchUserBuilds = async () => {
-    // Пока используем моковые данные для сборок
-    setUserBuilds([
-      { id: 1, title: "Игровой ПК High-End", content: "Сборка для комфортного гейминга в 4K...", likes: 45, comments: 15, date: "22.01.2024" },
-      { id: 2, title: "Бюджетная рабочая станция", content: "Оптимальная сборка для работы...", likes: 23, comments: 7, date: "20.01.2024" }
-    ]);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3005/api/builds', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Ошибка загрузки сборок');
+      const data = await response.json();
+      setUserBuilds(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Ошибка загрузки сборок пользователя:', error);
+      setUserBuilds([]);
+    }
   };
 
   const getCurrentData = () => {
     switch (activeTab) {
-      case 'guides': return userGuides;
-      case 'favorites': return favorites;
-      case 'notifications': return notifications;
-      case 'builds': return userBuilds;
+      case 'guides': return Array.isArray(userGuides) ? userGuides : [];
+      case 'favorites': return Array.isArray(favorites) ? favorites : [];
+      case 'notifications': return Array.isArray(notifications) ? notifications : [];
+      case 'builds': return Array.isArray(userBuilds) ? userBuilds : [];
       default: return [];
     }
   };
@@ -90,6 +125,14 @@ const Profile = () => {
     }
   };
 
+  const handleItemClick = (item) => {
+    if (item.type === 'build') {
+      navigate(`/build/${item.id}`);
+    } else {
+      navigate(`/guide/${item.id}`);
+    }
+  };
+
   const currentData = getCurrentData();
   const displayData = showAll ? currentData : currentData.slice(0, activeTab === 'notifications' ? 20 : 6);
   const hasMore = currentData.length > (activeTab === 'notifications' ? 20 : 6) && !showAll;
@@ -98,47 +141,36 @@ const Profile = () => {
     setShowAll(!showAll);
   };
 
-  const renderGuideCard = (guide, isFavorite = false) => (
-    <div key={guide.id} className="content-card">
-      {guide.coverImage && (
+  const renderContentCard = (item, isFavorite = false) => (
+    <div 
+      key={item.id} 
+      className="content-card"
+      onClick={() => handleItemClick(item)}
+    >
+      {item.coverImage && (
         <div className="card-cover">
           <img 
-            src={`http://localhost:3005${guide.coverImage}`} 
-            alt={guide.title}
+            src={`http://localhost:3005${item.coverImage}`} 
+            alt={item.title}
             className="cover-image"
           />
         </div>
       )}
-      <h3 className="card-title">{guide.title}</h3>
-      <p className="card-game">🎮 {guide.game}</p>
+      <h3 className="card-title">{item.title}</h3>
+      <p className="card-game">🎮 {item.game_name || item.game}</p>
       <div className="card-meta">
         <span className="author">
-          {isFavorite ? `Автор: ${guide.author_name}` : 'Автор: Вы'}
+          {isFavorite ? `Автор: ${item.author_name}` : 'Автор: Вы'}
         </span>
         <div className="stats">
-          <span className="likes">❤️ {guide.likes_count || 0}</span>
-          <span className="comments">💬 {guide.comments_count || 0}</span>
+          <span className="likes">❤️ {item.likes_count || 0}</span>
+          <span className="comments">💬 {item.comments_count || 0}</span>
           <span className="date">
             {isFavorite 
-              ? `Добавлено: ${new Date(guide.favorited_at).toLocaleDateString('ru-RU')}`
-              : `Создан: ${new Date(guide.created_at).toLocaleDateString('ru-RU')}`
+              ? `Добавлено: ${new Date(item.favorited_at || item.created_at).toLocaleDateString('ru-RU')}`
+              : `Создан: ${new Date(item.created_at).toLocaleDateString('ru-RU')}`
             }
           </span>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderBuildCard = (build) => (
-    <div key={build.id} className="content-card">
-      <h3 className="card-title">{build.title}</h3>
-      <p className="card-content">{build.content}</p>
-      <div className="card-meta">
-        <span className="author">Автор: Вы</span>
-        <div className="stats">
-          <span className="likes">❤️ {build.likes}</span>
-          <span className="comments">💬 {build.comments}</span>
-          <span className="date">{build.date}</span>
         </div>
       </div>
     </div>
@@ -149,23 +181,11 @@ const Profile = () => {
       <div className="profile-container">
         <div className="profile-main-block">
           <div className="profile-header">
-            <div className="avatar-section">
-              <div className="avatar-placeholder">
-                <span>Фото</span>
-              </div>
-              <button className="change-photo-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-              </button>
-            </div>
-            
             <div className="profile-info">
               <h1 className="username">{user?.name || 'User123'}</h1>
               <p className="registration-date">
                 Дата регистрации: {user?.created_at ? new Date(user.created_at).toLocaleDateString('ru-RU') : '15.12.2023'}
               </p>
-              <button className="change-password-btn">Изменить пароль</button>
             </div>
           </div>
 
@@ -281,15 +301,15 @@ const Profile = () => {
                 </div>
               ) : activeTab === 'favorites' ? (
                 favorites.length > 0 ? (
-                  displayData.map(guide => renderGuideCard(guide, true))
+                  displayData.map(item => renderContentCard(item, true))
                 ) : (
                   <div className="no-content">
-                    <p>У вас пока нет избранных гайдов</p>
+                    <p>У вас пока нет избранного</p>
                   </div>
                 )
               ) : activeTab === 'guides' ? (
                 userGuides.length > 0 ? (
-                  displayData.map(guide => renderGuideCard(guide, false))
+                  displayData.map(guide => renderContentCard(guide, false))
                 ) : (
                   <div className="no-content">
                     <p>У вас пока нет созданных гайдов</p>
@@ -297,7 +317,7 @@ const Profile = () => {
                 )
               ) : activeTab === 'builds' ? (
                 userBuilds.length > 0 ? (
-                  displayData.map(build => renderBuildCard(build))
+                  displayData.map(build => renderContentCard(build, false))
                 ) : (
                   <div className="no-content">
                     <p>У вас пока нет созданных сборок</p>
